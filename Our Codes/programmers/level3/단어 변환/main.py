@@ -1,36 +1,23 @@
-def solution(begin, target, words):
-    class Solution:
-        def __init__(self, begin, target, words):
-            self.begin = begin
-            self.target = target
-            self.words = [begin] + words
-            self.answer = 100
-            self.depth = 0
-            self.is_traced = [False for _ in range(len(words))]
-    
-        def check(self, i, j):
-            count = 0
-            for z in range(len(i)):
-                if i[z] != j[z]: count += 1
-                if count > 1: return False
-            return True
+from collections import deque
 
-        def dfs(self, i):
-            if self.words[i] == self.target:
-                self.answer = min(self.depth, self.answer)
-            else:    
-                for y, word in enumerate(self.words):
-                    if not self.is_traced[y] and self.check(self.words[i], word):
-                        self.is_traced[i] = True
-                        self.depth += 1
-                        self.dfs(y)
-         
-        def service(self):
-            if target not in self.words: return 0
-            self.dfs(0)
-            return self.answer if self.answer != 100 else 0
-        
-    return Solution(begin, target, words).service()
-        
-    
+def changeable(cur_word, word):
+    diff = [True for x, y in zip(cur_word, word) if x != y]
+    if len(diff) == 1: return True
+    else: return False
+
+def solution(begin, target, words):
+    visited = set([0])
+    words = [begin] + words
+    print(words)
+    queue = deque([(0, 0)])
+    while queue:
+        index, count = queue.popleft()
+        if words[index] == target: return count
+        for y, word in enumerate(words):
+            if changeable(words[index], word) and y not in visited:
+                print(word)
+                queue.append((y, count + 1))
+                visited.add(y)
+    return 0
+
 print(solution("hit", "cog", ["hot", "dot", "dog", "lot", "log", "cog"]))
