@@ -8,16 +8,12 @@ def changeable(cur_word, word):
 def solution(begin, target, words):
     visited = set([0])
     words = [begin] + words
-    print(words)
     queue = deque([(0, 0)])
     while queue:
         index, count = queue.popleft()
         if words[index] == target: return count
         for y, word in enumerate(words):
             if changeable(words[index], word) and y not in visited:
-                print(word)
                 queue.append((y, count + 1))
                 visited.add(y)
     return 0
-
-print(solution("hit", "cog", ["hot", "dot", "dog", "lot", "log", "cog"]))
