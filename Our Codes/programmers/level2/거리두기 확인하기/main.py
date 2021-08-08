@@ -1,8 +1,5 @@
 def check(stack):
-    print(stack)
-    if stack[0] == "X": return True
     if stack[0] == "O" and stack[1] == "O": return True
-    if stack[0] == "O" and stack[1] == "X": return True
     return False
 
 def out_of_range(_case, case):
@@ -17,6 +14,8 @@ def dfs(is_traced, stack, case, i, j):
     _cases = [[i+1, j], [i, j+1], [i-1, j], [i, j-1]]
     for _case in _cases:
         if not out_of_range(_case, case) and not is_traced[_case[0]][_case[1]]:
+            if case[_case[0]][_case[1]] == "P":
+                return False
             is_traced[_case[0]][_case[1]] = True
             stack.append(case[_case[0]][_case[1]])
             if not dfs(is_traced, stack, case, _case[0], _case[1]):
@@ -24,9 +23,13 @@ def dfs(is_traced, stack, case, i, j):
             stack.pop()
     return True
 
+def make_is_traced(case):
+    return [[True if case[i][j] == "X" else False 
+            for j in range(len(case[i]))] for i in range(len(case))]
+
 def trace(case):
     stack = []
-    is_traced = [[False] * len(case[0]) for _ in range(len(case))]
+    is_traced = make_is_traced(case)
     for i in range(len(case)):
         for j in range(len(case[0])):
             if case[i][j] == "P":
@@ -34,7 +37,8 @@ def trace(case):
                 result = dfs(is_traced, stack, case, i, j)
                 if not result: return False
                 stack = []
-                is_traced = [[False] * len(case[0]) for _ in range(len(case))]
+                is_traced = make_is_traced(case)
+                
     return True
 
 def solution(places):
@@ -46,5 +50,5 @@ def solution(places):
     return answers
 
 if __name__ == "__main__":
-  places = [["OOOOP", "OOPOO", "POOOO", "OOOOO", "OOOOP"]]
+  places = [["POOOP", "OXXOX", "OPXPX", "OOXOX", "POXXP"], ["POOPX", "OXPXP", "PXXXO", "OXXXO", "OOOPP"], ["PXOPX", "OXOXP", "OXPOX", "OXXOP", "PXPOX"], ["OOOXX", "XOOOX", "OOOXX", "OXOOX", "OOOOO"], ["PXPXP", "XPXPX", "PXPXP", "XPXPX", "PXPXP"]]
   print(solution(places))
